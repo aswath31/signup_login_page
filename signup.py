@@ -13,7 +13,7 @@ def create_connection():
             host='127.0.0.1',
             database='user_creds',
             user='root',
-            password='Aswath@007'
+            password='*****'
         )
         if connection.is_connected():
             print(f"Connected to MySQL Server version {connection.get_server_info()}")
