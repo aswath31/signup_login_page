@@ -1,10 +1,9 @@
 import streamlit as st
-import streamlit_authenticator as stauth
 import mysql.connector
 from mysql.connector import Error
 import datetime
 import re
-
+import hashlib
 
 def create_connection():
     connection = None
@@ -13,7 +12,7 @@ def create_connection():
             host='127.0.0.1',
             database='user_creds',
             user='root',
-            password='*****'
+            password='Aswath@007'
         )
         if connection.is_connected():
             print(f"Connected to MySQL Server version {connection.get_server_info()}")
@@ -25,7 +24,6 @@ def create_connection():
         print(f"Error: {e}")
 
     return connection
-
 
 
 def insert_user(email, username, password):
@@ -49,7 +47,6 @@ def insert_user(email, username, password):
         if connection is not None and connection.is_connected():
             cursor.close()
             connection.close()
-
 
 
 def fetch_users():
@@ -124,7 +121,7 @@ def sign_up():
                             if len(username) >= 2:
                                 if len(password) >= 8:
                                     if password == confirm_password:
-                                        hashed_pass = stauth.Hasher([confirm_password]).generate()[0]
+                                        hashed_pass = hashlib.sha256(confirm_password.encode()).hexdigest()
                                         insert_user(email, username, hashed_pass)
                                         st.success('Account Created!!!')
                                     else:
@@ -144,8 +141,9 @@ def sign_up():
 
         sb1, sb2, sb3, sb4, sb5 = st.columns(5)
         with sb3:
-            st.form_submit_button('Submit')
+            submit_button = st.form_submit_button('Submit')
 
-
-if __name__ == '__main__':
-    sign_up()
+    # Display the login form outside the form
+    if submit_button:
+        if st.button("Go to Login"):
+            st.experimental_set_query_params(page="login")
